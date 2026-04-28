@@ -1,4 +1,5 @@
 using System.Data;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
@@ -10,20 +11,29 @@ public class GameManager : MonoBehaviour
     public GameState currentState;
     public UnityEvent<GameState> OnStateChanged;
 
-    void Awake()
+   void Awake()
+{
+    if (Instance == null)
     {
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
+    else
+    {
+        Destroy(gameObject);
+    }
+}
 
     void Start()
     {
-        UpdateState(GameState.MainMenu);
+        UpdateState(GameState.Playing);
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            Debug.Log("ESC KEPencet" + currentState);
             if (currentState == GameState.Playing)
                 UpdateState (GameState.Paused);
             else if (currentState == GameState.Paused)
